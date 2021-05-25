@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "309742449004",
+    "project_id": "epicaesthetic-744a7",
+    "storage_bucket": "epicaesthetic-744a7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:309742449004:android:1f652c37a0737152958349",
+        "android_client_info": {
+          "package_name": "com.example.epic_aesthetic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "309742449004-p5c3ssgslr0qc06c4to6k651crl9uroe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0nh0km9gsi0IXC3ZO3WXNX3p5MSXd63g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "309742449004-p5c3ssgslr0qc06c4to6k651crl9uroe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
