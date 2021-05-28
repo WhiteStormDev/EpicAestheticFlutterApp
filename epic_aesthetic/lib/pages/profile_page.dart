@@ -1,11 +1,13 @@
 import 'package:epic_aesthetic/models/user_model.dart';
+import 'package:epic_aesthetic/pages/photo_tape_page.dart';
 import 'package:epic_aesthetic/services/authentication_service.dart';
+import 'package:epic_aesthetic/shared/globals.dart';
 import 'package:epic_aesthetic/views/image_view.dart';
+import 'package:epic_aesthetic/widgets/please_sign_up_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
-
 import 'edit_profile_page.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -36,15 +38,15 @@ class _ProfilePage extends State<ProfilePage>
             appBar: AppBar(
               leading: IconButton(
                 icon: Icon(Icons.close),
-                color: Colors.black,
+                color: Global.white,
                 onPressed: () {
-                  Navigator.maybePop(context);
+                  Navigator.of(context).popAndPushNamed("/SignUp");
                 },
               ),
               title: Text('Edit Profile',
                   style: TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.bold)),
-              backgroundColor: Colors.white,
+                      color: Global.white, fontWeight: FontWeight.bold)),
+              backgroundColor: Global.purple,
               actions: <Widget>[
                 IconButton(
                     icon: Icon(
@@ -69,12 +71,16 @@ class _ProfilePage extends State<ProfilePage>
   }
 
   void logout() async {
+
     await AuthenticationService().logout();
   }
 
   @override
   Widget build(BuildContext context) {
     userModel = Provider.of<UserModel>(context);
+    if (userModel == null)
+      return PleaseSignUpWidget();
+
     currentUserId = userModel.id;
     profileId = userModel.id;
     super.build(context); // reloads state when opened again
@@ -120,14 +126,13 @@ class _ProfilePage extends State<ProfilePage>
               child: Text(text,
                   style:
                   TextStyle(color: textColor, fontWeight: FontWeight.bold)),
-              width: 250.0,
+              width: 220.0,
               height: 27.0,
             )),
       );
     }
 
     Container buildProfileFollowButton() {
-      // viewing your own profile - should show edit button
       if (currentUserId == profileId) {
         return buildFollowButton(
           text: "Edit Profile",
@@ -147,7 +152,7 @@ class _ProfilePage extends State<ProfilePage>
     Row buildImageViewButtonBar() {
       Color isActiveButtonColor(String viewName) {
         if (view == viewName) {
-          return Colors.blueAccent;
+          return Global.purple;
         } else {
           return Colors.black26;
         }
@@ -174,20 +179,19 @@ class _ProfilePage extends State<ProfilePage>
 
     Container buildUserPosts() {
       Future<List<ImageView>> getPosts() async {
-        List<ImageView> posts = [];
+        List<ImageView> images = [];
         var snap = await FirebaseFirestore.instance
-            .collection('posts')
-        // .orderBy("timeStamp")
+            .collection('images')
             .where('userId', isEqualTo: profileId)
             .get();
         for (var doc in snap.docs) {
-          posts.add(ImageView.fromDocument(doc));
+          images.add(ImageView.fromDocument(doc, FeedType.All));
         }
         setState(() {
           imageCount = snap.docs.length;
         });
 
-        return posts.reversed.toList();
+        return images.reversed.toList();
       }
 
       return Container(
@@ -237,49 +241,47 @@ class _ProfilePage extends State<ProfilePage>
 
           return Scaffold(
               appBar: AppBar(
-                actions: <Widget>[
-                  Padding(
-                      padding: EdgeInsets.only(right: 20.0),
-                      child: GestureDetector(
-                        onTap: logout,
-                        child: Icon(
-                          Icons.logout,
-                          color: Colors.black,
-                        ),
-                      )
-                  ),
-                  // Padding(
-                  //     padding: EdgeInsets.only(right: 20.0),
-                  //     child: GestureDetector(
-                  //       onTap: () {},
-                  //       child: Icon(
-                  //           Icons.more_vert
-                  //       ),
-                  //     )
-                  // ),
-                ],
-                // title: Text(
-                //   user.name,
-                //   style: const TextStyle(color: Colors.black),
-                // ),
-                // leading: IconButton(
-                //     icon: Icon(Icons.logout, color: Colors.black),
-                //     onPressed: logout),
-
-                backgroundColor: Colors.white,
+                  backgroundColor: Global.purple,
+                  actions: <Widget>[
+                    Padding(
+                        padding: EdgeInsets.only(right: 20.0),
+                        child:
+                          Container(
+                            alignment: Alignment.centerRight,
+                            child: GestureDetector(
+                              onTap: logout,
+                              child: Icon(
+                                Icons.logout,
+                                color: Global.white,
+                              ),
+                            )
+                          )
+                    )
+                  ]
               ),
               body: ListView(
                 children: <Widget>[
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.only(top: 15.0, left: 15.0),
+                      child: Text(
+                        user.username,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            CircleAvatar(
-                              radius: 40.0,
-                              backgroundColor: Colors.grey,
-                              backgroundImage: NetworkImage(user.profileImageUrl),
+                            Column(
+                              children: [
+                                CircleAvatar(
+                                  backgroundImage: NetworkImage(user.profileImageUrl),
+                                  radius: 40.0,
+                                  backgroundColor: Colors.grey,
+                                ),
+                              ],
                             ),
                             Expanded(
                               flex: 1,
@@ -290,7 +292,7 @@ class _ProfilePage extends State<ProfilePage>
                                     mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
                                     children: <Widget>[
-                                      buildStatColumn("posts", imageCount),
+                                      buildStatColumn("images", imageCount),
                                     ],
                                   ),
                                   Row(
@@ -304,18 +306,6 @@ class _ProfilePage extends State<ProfilePage>
                             )
                           ],
                         ),
-                        Container(
-                            alignment: Alignment.centerLeft,
-                            padding: const EdgeInsets.only(top: 15.0),
-                            child: Text(
-                              user.firstName,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )),
-                        // Container(
-                        //   alignment: Alignment.centerLeft,
-                        //   padding: const EdgeInsets.only(top: 1.0),
-                        //   child: Text(user.bio),
-                        // ),
                       ],
                     ),
                   ),
@@ -334,7 +324,6 @@ class _ProfilePage extends State<ProfilePage>
     });
   }
 
-  // ensures state is kept when switching pages
   @override
   bool get wantKeepAlive => true;
 }
@@ -371,11 +360,4 @@ class ImageTile extends StatelessWidget {
         onTap: () => clickedImage(context),
         child: Image.network(imageView.imageUrl, fit: BoxFit.cover));
   }
-}
-
-void openProfile(BuildContext context, String userId) {
-  Navigator.of(context)
-      .push(MaterialPageRoute<bool>(builder: (BuildContext context) {
-    return ProfilePage(userId: userId);
-  }));
 }

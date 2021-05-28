@@ -13,7 +13,6 @@ class OnBoardingPage extends StatefulWidget{
 }
 
 class _OnBoardingState extends State<OnBoardingPage> {
-
   // ignore: deprecated_member_use
   List<SliderModel> slides = new List<SliderModel>();
   var currentIndex = 0;
@@ -25,9 +24,14 @@ class _OnBoardingState extends State<OnBoardingPage> {
     slides = getSlides();
   }
 
+  void ratePage(){
+    Navigator.of(context).popAndPushNamed("/RatePageFake");
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return
+      Scaffold(
       body: PageView.builder(
         controller: pageController,
         onPageChanged: (val) {
@@ -77,12 +81,16 @@ class _OnBoardingState extends State<OnBoardingPage> {
         Container(
           alignment: Alignment.center,
           height: Platform.isIOS ? 70 : 60,
-          color: Global.mediumBlue,
-
-          child: Text("GET STARTED NOW", style: TextStyle(
-            color: Global.white,
-            fontWeight: FontWeight.w600,
-          ),),
+          color: Global.purple,
+          child: InkWell(
+              onTap: () {
+                ratePage();
+              },
+              child: Text("GET STARTED NOW", style: TextStyle(
+                color: Global.white,
+                fontWeight: FontWeight.w600,
+              ),),
+          ),
         ),
     );
   }
@@ -99,3 +107,4 @@ class _OnBoardingState extends State<OnBoardingPage> {
      );
   }
 }
+

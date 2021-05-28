@@ -37,6 +37,10 @@ dependencies:
   flare_flutter: ^3.0.0
   image_picker: ^0.7.5+2
   firebase_storage: ^8.1.0
+  flutter_swiper: ^1.1.6
+  flutter_swipable: ^0.1.1
+  shared_preferences: ^2.0.6
+  after_layout: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -58,6 +62,8 @@ flutter:
    - assets/onboarding_1.png
    - assets/onboarding_2.png
    - assets/onboarding_3.png
+   - assets/user.png
+   - assets/flare/Like.flr
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

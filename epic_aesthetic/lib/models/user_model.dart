@@ -3,12 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class UserModel {
   String id;
-  String firstName;
-  String lastName;
-  String profileImageUrl = "gs://epicaesthetic-c1e1c.appspot.com/unnamed.jpg";
+  String username;
+  String profileImageUrl;
 
   UserModel.fromFireBase(User user) {
     id = user.uid;
+
   }
 
   UserModel.fromJson(Map<String, dynamic> values) {
@@ -16,15 +16,13 @@ class UserModel {
       return;
 
     id = values['id'];
-    firstName = values['firstName'];
-    lastName = values['lastName'];
+    username = values['username'];
     profileImageUrl = values['profileImageUrl'];
   }
 
   UserModel.fromDocument(DocumentSnapshot documentSnapshot) {
     id = documentSnapshot['id'];
-    firstName = documentSnapshot['firstName'];
-    lastName = documentSnapshot['lastName'];
+    username = documentSnapshot['username'];
     profileImageUrl = documentSnapshot['profileImageUrl'];
   }
 
@@ -32,8 +30,7 @@ class UserModel {
   Map<String, dynamic> toMap() {
     return {
       "id": id,
-      "firstName": firstName,
-      "lastName": lastName,
+      "username": username,
       "profileImageUrl": profileImageUrl
     };
   }

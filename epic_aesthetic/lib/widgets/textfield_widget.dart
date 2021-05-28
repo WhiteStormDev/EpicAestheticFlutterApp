@@ -1,7 +1,6 @@
 import 'package:epic_aesthetic/shared/globals.dart';
-import 'package:epic_aesthetic/view_models/login_view_model.dart';
+import 'package:epic_aesthetic/view_models/singup_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class TextFieldWidget extends StatelessWidget {
   final String hintText;
@@ -10,8 +9,10 @@ class TextFieldWidget extends StatelessWidget {
   final bool obscureText;
   final Function onChanged;
   final TextEditingController controller;
+  final SignUpViewModel viewModel;
 
   TextFieldWidget({
+    this.viewModel,
     this.controller,
     this.hintText,
     this.prefixIconData,
@@ -22,20 +23,19 @@ class TextFieldWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = Provider.of<LoginViewModel>(context);
 
     return TextField(
       controller: controller,
       onChanged: onChanged,
       obscureText: obscureText,
-      cursorColor: Global.mediumBlue,
+      cursorColor: Global.purple,
       style: TextStyle(
-        color: Global.mediumBlue,
+        color: Global.purple,
         fontSize: 14.0,
       ),
       decoration: InputDecoration(
-        labelStyle: TextStyle(color: Global.mediumBlue),
-        focusColor: Global.mediumBlue,
+        labelStyle: TextStyle(color: Global.purple),
+        focusColor: Global.purple,
         filled: true,
         enabledBorder: UnderlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -43,22 +43,22 @@ class TextFieldWidget extends StatelessWidget {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: Global.mediumBlue),
+          borderSide: BorderSide(color: Global.purple),
         ),
         labelText: hintText,
         prefixIcon: Icon(
           prefixIconData,
           size: 18,
-          color: Global.mediumBlue,
+          color: Global.purple,
         ),
         suffixIcon: GestureDetector(
           onTap: () {
-            model.isVisible = !model.isVisible;
+            viewModel.isVisible = !viewModel.isVisible;
           },
           child: Icon(
             suffixIconData,
             size: 18,
-            color: Global.mediumBlue,
+            color: Global.purple,
           ),
         ),
       ),

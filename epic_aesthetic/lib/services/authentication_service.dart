@@ -6,18 +6,15 @@ class AuthenticationService
 {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  Future<UserModel> signInWithEmailAndPassword(String email, String password) async {
-    try{
-      UserCredential result = await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
-      var user = result.user;
-      return DatabaseService().getUser(UserModel.fromFireBase(user).id);
-    } catch (e){
-      print(e);
-      return null;
-    }
+  Stream<UserModel> get currentUser{
+    return _firebaseAuth.authStateChanges().map((user) => user != null ? UserModel.fromFireBase(user) : null);
   }
 
-  Future<UserModel> signUpWithEmailAndPassword(String email, String password) async {
+  Future logout() async {
+    await _firebaseAuth.signOut();
+  }
+
+  Future<UserModel> signUpByEmailAndPassword(String email, String password) async {
     try{
       UserCredential result = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
       var user = result.user;
@@ -32,11 +29,14 @@ class AuthenticationService
     }
   }
 
-  Future logout() async {
-    await _firebaseAuth.signOut();
-  }
-
-  Stream<UserModel> get currentUser{
-    return _firebaseAuth.authStateChanges().map((user) => user != null ? UserModel.fromFireBase(user) : null);
+  Future<UserModel> loginByEmailAndPassword(String email, String password) async {
+    try{
+      UserCredential result = await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
+      var user = result.user;
+      return DatabaseService().getUser(UserModel.fromFireBase(user).id);
+    } catch (e){
+      print(e);
+      return null;
+    }
   }
 }

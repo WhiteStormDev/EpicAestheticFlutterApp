@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ImageModel {
   String id;
   String userId;
@@ -12,6 +14,7 @@ class ImageModel {
     this.imageUrl = imageUrl;
     this.userId = userId;
     this.epicLikes = epicLikes;
+    this.aestheticLikes = aestheticLikes;
     this.dateTime = dateTime;
   }
 
@@ -21,7 +24,6 @@ class ImageModel {
     this.imageUrl = values['imageUrl'];
     this.epicLikes = values['epicLikes'];
     this.aestheticLikes = values['aestheticLikes'];
-    this.dateTime = values['dateTime'];
   }
 
   Map<String, dynamic> toMap() {

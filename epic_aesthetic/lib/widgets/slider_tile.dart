@@ -18,7 +18,11 @@ class SliderTile extends StatelessWidget {
         children: <Widget>[
           Image.asset(imageAssetPath),
           SizedBox(height: 20,),
-          Text(title),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+          ),
           SizedBox(height: 12,),
           Text(desc),
         ],

@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:epic_aesthetic/models/user_model.dart';
-import 'package:epic_aesthetic/services/authentication_service.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import "package:flutter/material.dart";
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -62,7 +61,7 @@ class EditProfilePage extends StatelessWidget {
 
   Future<String> uploadImage(var imageFile) async {
     var id = Uuid().v1();
-    Reference ref = FirebaseStorage.instance.ref().child("post_$id.jpg");
+    Reference ref = FirebaseStorage.instance.ref().child("image_$id.jpg");
     UploadTask uploadTask = ref.putFile(imageFile);
     String downloadUrl = await (await uploadTask).ref.getDownloadURL();
     return downloadUrl;
@@ -70,15 +69,13 @@ class EditProfilePage extends StatelessWidget {
 
   applyChanges() {
     FirebaseFirestore.instance.collection('users').doc(userModel.id).update({
-      "name": nameController.text
-      // "bio": bioController.text,
+      "username": nameController.text
     });
   }
 
   applyNewPhoto(String photoUrl) {
     FirebaseFirestore.instance.collection('users').doc(userModel.id).update({
-      "photoUrl": photoUrl
-      // "bio": bioController.text,
+      "profileImageUrl": photoUrl
     });
   }
 
@@ -106,6 +103,7 @@ class EditProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     userModel = Provider.of<UserModel>(context);
+    UserModel user;
     return FutureBuilder(
         future: FirebaseFirestore.instance
             .collection('users')
@@ -117,17 +115,15 @@ class EditProfilePage extends StatelessWidget {
                 alignment: FractionalOffset.center,
                 child: CircularProgressIndicator());
 
-          userModel = UserModel.fromDocument(snapshot.data);
-
-          nameController.text = userModel.firstName;
-          // bioController.text = user.bio;
+          user = UserModel.fromDocument(snapshot.data);
+          nameController.text = user.username;
 
           return Column(
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
                 child: CircleAvatar(
-                  backgroundImage: NetworkImage(userModel.profileImageUrl),
+                  backgroundImage: NetworkImage(user.profileImageUrl),
                   radius: 50.0,
                 ),
               ),
@@ -153,9 +149,5 @@ class EditProfilePage extends StatelessWidget {
             ],
           );
         });
-  }
-
-  void _logout(BuildContext context) async {
-    await AuthenticationService().logout();
   }
 }

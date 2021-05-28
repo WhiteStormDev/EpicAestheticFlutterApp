@@ -14,37 +14,20 @@ class ButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    return RaisedButton(
-      splashColor: Theme.of(context).primaryColor,
-      highlightColor: Theme.of(context).primaryColor,
-      color: hasBorder ? Global.white : Global.mediumBlue,
-      child: Text(
-          title,
-          style: TextStyle(
-            color: hasBorder ? Global.mediumBlue : Global.white,
-            fontWeight: FontWeight.w600,
-            fontSize: 16.0,
-          )
-      ),
-      onPressed: () => {
-        onPress()
-      },
-    );
     return Material(
-
       child: Ink(
         decoration: BoxDecoration(
-          color: hasBorder ? Global.white : Global.mediumBlue,
+          color: hasBorder ? Global.white : Global.purple,
           borderRadius: BorderRadius.circular(10),
           border: hasBorder
               ? Border.all(
-            color: Global.mediumBlue,
+            color: Global.purple,
             width: 1.0,
           )
               : Border.fromBorderSide(BorderSide.none),
         ),
         child: InkWell(
+          onTap: onPress,
           borderRadius: BorderRadius.circular(10),
           child: Container(
             height: 60.0,
@@ -52,7 +35,7 @@ class ButtonWidget extends StatelessWidget {
               child: Text(
                 title,
                 style: TextStyle(
-                  color: hasBorder ? Global.mediumBlue : Global.white,
+                  color: hasBorder ? Global.purple : Global.white,
                   fontWeight: FontWeight.w600,
                   fontSize: 16.0,
                 ),

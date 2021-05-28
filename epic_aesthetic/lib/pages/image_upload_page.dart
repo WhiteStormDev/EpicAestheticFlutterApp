@@ -1,9 +1,11 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:epic_aesthetic/models/image_model.dart';
 import 'package:epic_aesthetic/models/user_model.dart';
 import 'package:epic_aesthetic/services/database_service.dart';
+import 'package:epic_aesthetic/shared/globals.dart';
+import 'package:epic_aesthetic/widgets/button_widget.dart';
+import 'package:epic_aesthetic/widgets/please_sign_up_widget.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,23 +27,19 @@ class ImageUploadPageState extends State<ImageUploadPage> {
 
   Widget build(BuildContext context) {
     user = Provider.of<UserModel>(context);
+    if (user == null)
+      return PleaseSignUpWidget();
 
     return file == null
         ? Padding(
-      padding: EdgeInsets.only(left: 20, right: 20, top: 330),
-      child: Container(
-        height: 50,
-        width: MediaQuery.of(context).size.width,
-        child: RaisedButton(
-          splashColor: Theme.of(context).primaryColor,
-          highlightColor: Theme.of(context).primaryColor,
-          color: Colors.red,
-          child: Text("CREATE NEW POST",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold, color: Colors.white)),
-          onPressed: () => {_selectImage(context)},
+      padding: const EdgeInsets.all(30.0),
+      child: Scaffold(
+        bottomSheet:  ButtonWidget(
+            title: "Create image",
+            hasBorder: false,
+            onPress: () => _selectImage(context)
         ),
-      ),
+      )
     )
         : Scaffold(
         resizeToAvoidBottomInset: false,
@@ -51,7 +49,7 @@ class ImageUploadPageState extends State<ImageUploadPage> {
               icon: Icon(Icons.arrow_back, color: Colors.black),
               onPressed: clearImage),
           title: const Text(
-            'Post to',
+            'Post image',
             style: const TextStyle(color: Colors.black),
           ),
           actions: <Widget>[
@@ -72,16 +70,7 @@ class ImageUploadPageState extends State<ImageUploadPage> {
               imageFile: file,
               loading: uploading,
             ),
-            // RaisedButton(
-            //   splashColor: Theme.of(context).primaryColor,
-            //   highlightColor: Theme.of(context).primaryColor,
-            //   color: Colors.red,
-            //   child: Text("POST",
-            //       style: TextStyle(
-            //           fontWeight: FontWeight.bold, color: Colors.white)),
-            //   onPressed: () => postImage(),
-            // ),
-            Divider() //scroll view where we will show location to users
+            Divider()
           ],
         ));
   }
@@ -152,8 +141,13 @@ class ImageUploadPageState extends State<ImageUploadPage> {
     Map<String, bool> aestheticLikes = Map();
     epicLikes.putIfAbsent(user.id, () => false);
     aestheticLikes.putIfAbsent(user.id, () => false);
-    DatabaseService().createPost(ImageModel.fromParameters(
-        Uuid().v1(), imageUrl, user.id, epicLikes, aestheticLikes, DateTime.now()));
+    DatabaseService().createImage(ImageModel.fromParameters(
+        Uuid().v1(),
+        imageUrl,
+        user.id,
+        epicLikes,
+        aestheticLikes,
+        DateTime.now()));
   }
 
   void clearImage() {
@@ -194,32 +188,6 @@ class PostForm extends StatelessWidget {
                   image: FileImage(imageFile),
                 ))
         ),
-        // Row(
-        //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-        //   children: <Widget>[
-        //     Container(
-        //         decoration: BoxDecoration(
-        //             image: DecorationImage(
-        //               fit: BoxFit.fill,
-        //               alignment: FractionalOffset.topCenter,
-        //               image: FileImage(imageFile),
-        //             ))
-        //       // height: 90.0,
-        //       // width: 90.0,
-        //       // child: AspectRatio(
-        //       //   aspectRatio: 487 / 451,
-        //       //   child: Container(
-        //       //     decoration: BoxDecoration(
-        //       //         image: DecorationImage(
-        //       //       fit: BoxFit.fill,
-        //       //       alignment: FractionalOffset.topCenter,
-        //       //       image: FileImage(imageFile),
-        //       //     )),
-        //       //   ),
-        //       // ),
-        //     ),
-        //   ],
-        // ),
         Divider()
       ],
     );
